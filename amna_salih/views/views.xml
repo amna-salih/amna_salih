@@ -10,6 +10,7 @@
         sequence="100" parent="amna_salih.menu_helpdesk_root"
         groups="amna_salih.group_help_desk_manager"/>
 
+
     <!-- HELPDESK.TAG -->
     <record id="helpdesk_tag_view_tree" model="ir.ui.view">
         <field name="name">helpdesk.tags.tree</field>
