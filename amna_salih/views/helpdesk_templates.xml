@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_menu_hd_ticket" name="Portal layout : ticket menu entries" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'ticket'" t-attf-class="breadcrumb-item #{'active ' if not hd_ticket else ''}">
+                <a t-if="hd_ticket" t-attf-href="/my/tickets?{{ keep_query() }}">Ticket</a>
+                <t t-else="">Ticket</t>
+            </li>
+            <li t-if="hd_ticket" class="breadcrumb-item active">
+                <strong> Ticket</strong>
+            </li>
+        </xpath>
+    </template>
+
+
+    <template id="portal_my_home_ticket" name="Show Ticket" inherit_id="portal.portal_my_home" customize_show="True" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Ticket</t>
+                <t t-set="url" t-value="'/my/tickets'"/>
+                <t t-set="placeholder_count" t-value="'ticket_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_tickets" name="My Tickets">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Tickets</t>
+            </t>
+            <t t-if="not tickets">
+                <p>There are currently no ticket.</p>
+            </t>
+            <t t-if="tickets" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>
+                            <span class='d-none d-md-inline'>Tickets #</span>
+                            <span class='d-block d-md-none'>Ref.</span>
+                        </th>
+                        <th class="text-right">Tickets Date</th>
+                        <th class="text-right"></th>
+                        <th class="text-center"/>
+                    </tr>
+                </thead>
+                <t t-foreach="tickets" t-as="offer">
+                    <tr>
+                        <td>
+                            <a t-att-href="ticket.get_portal_url()">
+                                <t t-esc="ticket.name"/>
+                            </a>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="ticket.time_submitted" t-options="{'widget': 'date'}"/>
+&amp;nbsp;
+                        </td>
+                        <td class="text-center">
+                            <span t-if="ticket.state == 'done'" class="badge badge-pill badge-success">
+                                <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>
+Done
+                            </span>
+                            <span t-if="ticket.state == 'cancel'" class="badge badge-pill badge-secondary">
+                                <i class="fa fa-fw fa-remove"/>
+ Rejected</span>
+                        </td>
+                        <!-- <td class="text-right"><span t-field="offer.amount_total"/></td> -->
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="ticket_portal_template" name="Ticket Portal Template" inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <t t-set="o_portal_fullwidth_alert">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (hd_ticket._name, hd_ticket.id, action.id)"/>
+                </t>
+            </t>
+
+            <div class="row mt16 o_portal_job_offer_sidebar">
+                <!-- Sidebar -->
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-auto d-print-none'"/>
+
+                    <t t-set="title">
+                    </t>
+                    <t t-set="entries">
+                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                            <li class="list-group-item flex-grow-1">
+
+
+                                <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="hd_ticket.get_portal_url(report_type='pdf', download=True)" title="Download">
+                                            <i class="fa fa-download"/>
+ Download</a>
+                                    </div>
+
+                                </div>
+                            </li>
+
+                            <li class="navspy list-group-item pl-0 flex-grow-1" t-ignore="true" role="complementary">
+                                <ul class="nav flex-column bs-sidenav"></ul>
+                            </li>
+
+
+
+                        </ul>
+                    </t>
+                </t>
+
+                <!-- Page content -->
+                <div id="ticket_content" class="col-12 col-lg justify-content-end">
+
+                    <!-- modal relative to the actions sign  -->
+                    <div role="dialog" class="modal fade" id="modalaccept">
+                        <div class="modal-dialog" t-if="hd_ticket.has_to_be_signed(True)">
+                            <form id="accept" method="POST" t-att-data-order-id="hd_ticket.id" t-att-data-token="hd_ticket.access_token" class="js_accept_json modal-content js_website_submit_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Validate Order</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                </header>
+
+                            </form>
+                        </div>
+                    </div>
+                     main content
+                    <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}" id="portal_helpdesk_content">
+                        <div t-call="amna_salih.helpdesk_portal_content"/>
+                    </div>
+                     chatter
+                    <div id="job_offer_communication" class="mt-4">
+                        <h2>History</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="hd_ticket"/>
+                        </t>
+                    </div>
+                </div>
+                <!-- // #ticket_content -->
+            </div>
+        </xpath>
+    </template>
+
+
+
+
+    <template id="helpdesk_portal_content" name="Helpdesk Portal Content">
+        <div t-attf-class="#{'card-body' if report_type == 'html' else ''}">
+            <!-- Intro -->
+            <div id="informations">
+                <h2 class="mt16 center">
+                    <strong>Ticket Ref : </strong>
+                    <span t-field="hd_ticket.name"/>
+                </h2>
+
+                <div class="row mt32 mb32">
+                    <div class="col-auto col-6 mw-100 mb-2">
+                        <strong>Ticket Name :  </strong>
+                        <span t-field="hd_ticket.ticket_name"/>
+                    </div>
+
+
+                </div>
+
+                <div class="row mt32 mb32">
+                    <div class="col-auto col-6 mw-100 mb-2">
+                        <strong>Ticket Team :  </strong>
+                        <span t-field="hd_ticket.team_id.name"/>
+                    </div>
+
+
+                </div>
+
+                 <div class="row mt32 mb32">
+                    <div class="col-auto col-6 mw-100 mb-2">
+                        <strong>Hosting Type :  </strong>
+                        <span t-field="hd_ticket.hosting_type"/>
+                    </div>
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </template>
+
+
+</odoo>

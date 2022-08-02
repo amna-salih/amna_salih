@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2018-2019 ForgeFlow, S.L.
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0) -->
+<odoo noupdate="1">
+    <record id="seq_hd_ticket" model="ir.sequence">
+        <field name="name">Ticket</field>
+        <field name="code">hd.ticket</field>
+        <field name="prefix">t</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_help_desk_user,hd.ticket,model_hd_ticket,group_help_desk_user,1,1,1,1
+access_help_desk_manager,hd.ticket,model_hd_ticket,group_help_desk_manager,1,1,1,1
+access_helpdesk_tag_user,helpdesk.tag,model_helpdesk_tag,,1,1,1,1
+access_hd_team_user,hd.team,model_hd_team,,1,1,1,1
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Share Button in action menu -->
+        <record id="model_hd_ticket_action_share" model="ir.actions.server">
+            <field name="name">Share</field>
+            <field name="model_id" ref="amna_salih.model_hd_ticket"/>
+            <field name="binding_model_id" ref="amna_salih.model_hd_ticket"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_share()</field>
+        </record>
+
+        <!-- set default offer confirmation template -->
+<!--        <record id="default_confirmation_template" model="ir.config_parameter">-->
+<!--            <field name="key">amna_salih.default_confirmation_template</field>-->
+<!--            <field name="value" ref="amna_salih.mail_template_ticket_confirmation"/>-->
+<!--        </record>-->
+
+    </data>
+</odoo>

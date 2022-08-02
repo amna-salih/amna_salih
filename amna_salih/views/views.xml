@@ -1,0 +1,351 @@
+<odoo>
+  <data>
+      <menuitem id="menu_helpdesk_root" name="Helpdesk"
+        sequence="90"
+        web_icon="amna_salih,static/description/icon.png"
+        groups="amna_salih.group_help_desk_user"
+      />
+
+    <menuitem id="helpdesk_menu_config" name="Configuration"
+        sequence="100" parent="amna_salih.menu_helpdesk_root"
+        groups="amna_salih.group_help_desk_manager"/>
+
+    <!-- HELPDESK.TAG -->
+    <record id="helpdesk_tag_view_tree" model="ir.ui.view">
+        <field name="name">helpdesk.tags.tree</field>
+        <field name="model">helpdesk.tag</field>
+        <field name="arch" type="xml">
+            <tree editable="top" string="Tag" sample="1" multi_edit="1">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="helpdesk_tag_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.tags.form</field>
+        <field name="model">helpdesk.tag</field>
+        <field name="arch" type="xml">
+            <form string="Tags">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_tag_action" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">helpdesk.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No tags found. Let's create one!
+          </p><p>
+            Tags are perfect for organizing your tickets.
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="helpdesk_tag_menu" action="helpdesk_tag_action"
+        sequence="1" parent="amna_salih.helpdesk_menu_config"
+        groups="base.group_no_one"/>
+
+
+
+
+      <record model="ir.actions.act_window" id="action_ticket_view">
+        <field name="name">Ticket</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hd.ticket</field>
+        <field name="view_mode">tree,form</field>
+
+
+
+    </record>
+
+    <record id="view_hd_ticket_form" model="ir.ui.view">
+        <field name="name">hd.ticket.form</field>
+        <field name="model">hd.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket">
+                <header>
+                    <button
+                        name="button_set_draft"
+                        states="Cancel"
+                        string="Reset To Draft"
+                        type="object"
+                        groups="amna_salih.group_help_desk_user,amna_salih.group_help_desk_manager"
+                    />
+                    <button
+                        name="button_draft"
+                        states="draft"
+                        string="draft"
+                        type="object"
+                        class="oe_highlight"
+                        groups="amna_salih.group_help_desk_user,amna_salih.group_help_desk_manager"
+                    />
+                    <button
+                        name="button_confirm"
+                        states="confirm"
+                        string="confirm"
+                        type="object"
+                        class="oe_highlight"
+                        groups="amna_salih.group_help_desk_user,amna_salih.group_help_desk_manager"
+                    />
+
+
+
+                     <button
+                        name="button_cancel"
+                        states="confirm"
+                        string="Cancel"
+                        type="object"
+                        groups="amna_salih.group_help_desk_manager,amna_salih.group_help_desk_user"
+                    />
+                     <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,confirm,canceled,done"
+                        statusbar_colors='{"confirm":"blue"}'
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                     <button name="preview_ticket" type="object" class="oe_stat_button" icon="fa-globe icon">
+                        <div class="o_field_widget o_stat_info">
+                           <span class="o_stat_text">Preview</span>
+                        </div>
+                     </button>
+
+                  </div>
+                    <h1>
+                        <field name="name" class="oe_inline"/>
+                        <field name="ticket_name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="time_submitted"/>
+
+                        </group>
+                          <group>
+
+                            <field name="description"/>
+                        </group>
+                        <group>
+
+                            <field name="team_id"/>
+                            <field name="user_id"/>
+                            <field name="priority"/>
+                            <field name="tag_ids"/>
+                            <field name="resolution_time"/>
+                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options='{"always_reload": True}'/>
+                            <field name="partner_phone"/>
+                            <field name="partner_email"/>
+                            <field name="hosting_type"/>
+                        </group>
+
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+   
+    <record model="ir.actions.act_window" id="ticket_action">
+        <field name="name">Ticket</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hd.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to start a new Ticket process.
+            </p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+      <record id="view_check_area_tree" model="ir.ui.view">
+        <field name="name">hd.ticket.tree</field>
+        <field name="model">hd.ticket</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-bf="message_needaction==True"
+                decoration-info="state in ('draft')"
+                decoration-muted="state in ('Cancel')"
+                string="Ticket"
+            >
+                <field name="message_needaction" invisible="1" />
+                <field name="name" />
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <field name="priority"/>
+                <field name="tag_ids"/>
+                <field name="partner_id"/>
+
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state in ('done', 'confirm')"
+                    decoration-muted="state == 'draft'"
+                    decoration-danger="state == 'Cancel'"
+                />
+            </tree>
+        </field>
+    </record>
+
+      <record id="action_view_tickets" model="ir.actions.act_window">
+        <field name="name">Tickets</field>
+        <field name="res_model">hd.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('partner_id','=',active_id)]</field>
+        <field name="context">{
+            'search_default_partner_id': [active_id],
+            'default_partner_id': active_id,
+            'search_default_group_by_state': 1
+        }</field>
+    </record>
+
+    <record id="action_ticket" model="ir.actions.act_window">
+        <field name="name">Tickets</field>
+        <field name="res_model">hd.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_id','=',active_id)]</field>
+        <field name="context">{
+            'search_default_user_id': [active_id],
+            'default_user_id': active_id,
+            'search_default_group_by_state': 1
+        }</field>
+    </record>
+      <record id="inherited_view_res_users_form" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[hasclass('oe_button_box')]/button[2]" position="after">
+                <button name="%(action_ticket)d"
+                    type="action"
+                    class="oe_stat_button"
+                    icon="fa-book"
+                    attrs="{'invisible': [('tickets_count', '=', 0)]}">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">
+                                <field name="tickets_count"/>
+                            </span>
+                            <span class="o_stat_text">
+                                Tickets
+                            </span>
+                        </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+
+  <record id="inherited_view_res_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[hasclass('oe_button_box')]/button[2]" position="after">
+                <button name="%(action_view_tickets)d"
+                    type="action"
+                    class="oe_stat_button"
+                    icon="fa-book"
+                    attrs="{'invisible': [('tickets_count', '=', 0)]}">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">
+                                <field name="tickets_count"/>
+                            </span>
+                            <span class="o_stat_text">
+                                Tickets
+                            </span>
+                        </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem
+        id="root_ticket_id" name="Ticket"  sequence="0" parent="menu_helpdesk_root" groups="group_help_desk_user"/>
+        name="Ticket"
+    />
+
+    <menuitem
+        id="root_ticket_menue"
+        sequence="55"
+        parent="root_ticket_id"
+        name="Ticket" action="ticket_action"
+    />
+
+ <record id="view_hd_team_form" model="ir.ui.view">
+        <field name="name">hd.team.form</field>
+        <field name="model">hd.team</field>
+        <field name="arch" type="xml">
+            <form string="Team">
+
+                <sheet>
+                    <group>
+                      <field name="name"/>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="team_action">
+        <field name="name">Team</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hd.team</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to start a new Team process.
+            </p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+
+      <menuitem
+        id="root_team_id" name="Team"  sequence="0" parent="helpdesk_menu_config" groups="group_help_desk_manager"/>
+        name="Team"
+    />
+
+    <menuitem
+        id="root_team_menue"
+        sequence="55"
+        parent="root_team_id"
+        name="Team" action="team_action"
+    />
+
+
+
+
+
+  </data>
+</odoo>
